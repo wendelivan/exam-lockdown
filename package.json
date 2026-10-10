@@ -1,0 +1,46 @@
+{
+  "name": "exam-lockdown",
+  "version": "1.0.0",
+  "description": "Secure kiosk app for taking Google Form exams",
+  "author": "Wendel",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.examlockdown.app",
+    "productName": "Exam Lockdown",
+    "files": [
+      "main.js",
+      "preload.js",
+      "exit-prompt.html"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": null
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": null
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerSidebar": null
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exit Exam</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #0c0c18;
+      color: #d4d4e0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 32px 28px;
+      user-select: none;
+      -webkit-app-region: no-drag;
+      overflow: hidden;
+    }
+
+    /* ── Icon ──────────────────────────────────────────────────── */
+    .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2a2a4a 0%, #1a1a30 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ── Typography ───────────────────────────────────────────── */
+    h1 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #ebebf5;
+      margin-bottom: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .subtitle {
+      font-size: 12.5px;
+      color: #8888a4;
+      margin-bottom: 22px;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    /* ── Input ─────────────────────────────────────────────────── */
+    .input-wrap {
+      width: 100%;
+      position: relative;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #e0e0f0;
+      background: #16162a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="password"]:focus {
+      border-color: rgba(100, 120, 255, 0.5);
+      box-shadow: 0 0 0 3px rgba(100, 120, 255, 0.12);
+    }
+
+    input[type="password"]::placeholder {
+      color: #555570;
+    }
+
+    input[type="password"]:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ── Buttons ───────────────────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    button {
+      flex: 1;
+      padding: 11px 0;
+      font-size: 13.5px;
+      font-weight: 500;
+      font-family: inherit;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.12s, opacity 0.15s, box-shadow 0.2s;
+      letter-spacing: 0.1px;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.05);
+      color: #9999b0;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .btn-cancel:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.08);
+      color: #bbbbd0;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #4a5aff 0%, #6e3aff 100%);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(90, 80, 255, 0.3);
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      box-shadow: 0 4px 20px rgba(90, 80, 255, 0.45);
+    }
+
+    /* ── Status message ───────────────────────────────────────── */
+    .status {
+      margin-top: 14px;
+      font-size: 12px;
+      min-height: 18px;
+      text-align: center;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+
+    .status.error {
+      color: #ff6b6b;
+    }
+
+    .status.locked {
+      color: #ffaa44;
+    }
+
+    .status.info {
+      color: #8888a4;
+    }
+
+    /* ── Animations ───────────────────────────────────────────── */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+
+    .shake {
+      animation: shake 0.35s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      animation: fadeIn 0.25s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="container">
+    <div class="icon">🔒</div>
+    <h1>Teacher Exit</h1>
+    <p class="subtitle">Enter the teacher password to close the exam.</p>
+
+    <div class="input-wrap">
+      <input
+        type="password"
+        id="passwordInput"
+        placeholder="Password"
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+      >
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-cancel" id="cancelBtn" type="button">Cancel</button>
+      <button class="btn-submit" id="submitBtn" type="button">Unlock</button>
+    </div>
+
+    <p class="status" id="status"></p>
+  </div>
+
+  <script>
+    // ── DOM refs ────────────────────────────────────────────────
+    const passwordInput = document.getElementById('passwordInput');
+    const submitBtn     = document.getElementById('submitBtn');
+    const cancelBtn     = document.getElementById('cancelBtn');
+    const statusEl      = document.getElementById('status');
+    const container     = document.getElementById('container');
+
+    let lockoutTimer = null;
+
+    // ── Receive initial state from main process ────────────────
+    window.exitPrompt.onState((state) => {
+      if (state.locked) {
+        enterLockout(state.lockoutRemaining);
+      } else {
+        statusEl.className = 'status info';
+        statusEl.textContent = state.remaining + ' attempt' + (state.remaining !== 1 ? 's' : '') + ' remaining';
+      }
+    });
+
+    // ── Submit ──────────────────────────────────────────────────
+    async function handleSubmit() {
+      const pw = passwordInput.value;
+      if (!pw) {
+        passwordInput.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      passwordInput.disabled = true;
+
+      const result = await window.exitPrompt.submit(pw);
+
+      if (result.success) {
+        statusEl.className = 'status info';
+        statusEl.textContent = 'Exiting…';
+        return; // app is quitting
+      }
+
+      if (result.locked) {
+        enterLockout(result.lockoutRemaining);
+        return;
+      }
+
+      // Wrong password
+      passwordInput.value = '';
+      passwordInput.disabled = false;
+      submitBtn.disabled = false;
+      passwordInput.focus();
+
+      statusEl.className = 'status error';
+      statusEl.textContent = 'Wrong password — ' + result.remaining + ' attempt' + (result.remaining !== 1 ? 's' : '') + ' left';
+
+      // Shake animation
+      container.classList.remove('shake');
+      void container.offsetWidth; // reflow to restart animation
+      container.classList.add('shake');
+    }
+
+    // ── Lockout countdown ──────────────────────────────────────
+    function enterLockout(seconds) {
+      passwordInput.value = '';
+      passwordInput.disabled = true;
+      submitBtn.disabled = true;
+
+      let remaining = seconds;
+      updateLockoutDisplay(remaining);
+
+      if (lockoutTimer) clearInterval(lockoutTimer);
+      lockoutTimer = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(lockoutTimer);
+          lockoutTimer = null;
+          passwordInput.disabled = false;
+          submitBtn.disabled = false;
+          passwordInput.focus();
+          statusEl.className = 'status info';
+          statusEl.textContent = '5 attempts remaining';
+        } else {
+          updateLockoutDisplay(remaining);
+        }
+      }, 1000);
+    }
+
+    function updateLockoutDisplay(sec) {
+      statusEl.className = 'status locked';
+      statusEl.textContent = 'Too many attempts. Try again in ' + sec + 's';
+    }
+
+    // ── Cancel ─────────────────────────────────────────────────
+    function handleCancel() {
+      window.exitPrompt.cancel();
+    }
+
+    // ── Event listeners ────────────────────────────────────────
+    submitBtn.addEventListener('click', handleSubmit);
+    cancelBtn.addEventListener('click', handleCancel);
+
+    passwordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSubmit();
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleCancel();
+      }
+    });
+
+    // Also close on Escape anywhere in the window
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleCancel();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+================================================================================
+EXAM LOCKDOWN - USER GUIDE & SYSTEM FLOW
+================================================================================
+
+--------------------------------------------------------------------------------
+1. FLOW FOR TEACHERS (BEFORE & DURING EXAM)
+--------------------------------------------------------------------------------
+
+[Create Form] --> [Upload & Share App] --> [Exam Monitoring] --> [Teacher Override (if needed)]
+
+STEP 1: PREPARE THE EXAM FORM
+  - Create or open your quiz in Google Forms.
+  - Recommended settings: Limit to 1 response, collect email addresses.
+
+STEP 2: DISTRIBUTE THE APPLICATION TO STUDENTS
+  - File to upload:
+      Exam Lockdown-Portable.exe (located in the project "dist" folder)
+  - Upload options:
+      * Google Drive (Share -> Anyone with the link can view/download)
+      * Google Classroom (Attach as assignment or material)
+      * School Portal, OneDrive, or Dropbox
+  - Share the download link with students before exam day.
+
+STEP 3: TEACHER EMERGENCY EXIT (OVERRIDE)
+  - If a student needs to exit before finishing:
+      1. Go to the student's computer.
+      2. Press Ctrl + Shift + X (or Cmd + Shift + X on Mac).
+      3. Enter the teacher password: Teacher123!
+      4. Click Unlock or press Enter. The app will immediately close.
+  - Security note:
+      * There is a 5-attempt limit with a 30-second lockout to prevent
+        unauthorized guessing.
+
+
+--------------------------------------------------------------------------------
+2. FLOW FOR STUDENTS (TAKING THE EXAM)
+--------------------------------------------------------------------------------
+
+[Download App] --> [Double-Click .exe] --> [Answer in Kiosk] --> [Submit Form] --> [App Auto-Closes]
+
+STEP 1: DOWNLOAD
+  - Open the link sent by your teacher.
+  - Download "Exam Lockdown-Portable.exe".
+  - No installation, setup, or extra software is needed.
+
+STEP 2: LAUNCH
+  - Double-click "Exam Lockdown-Portable.exe".
+  - First-time note: If Windows shows a blue "Windows protected your PC" screen:
+      Click "More info" -> then click "Run anyway".
+
+STEP 3: TAKE THE EXAM
+  - The application opens in True Fullscreen Kiosk Mode:
+      * Taskbar, desktop, and window borders are completely hidden.
+      * Alt+Tab, Windows Key, F-keys, and dev tools are blocked.
+      * External websites and popups are blocked.
+      * Answer typing shortcuts work normally (Ctrl+C, Ctrl+V, Ctrl+Z, Ctrl+A).
+  - If Wi-Fi momentarily drops:
+      * A dark connecting screen appears and retries every 5 seconds.
+      * You will not lose your progress once reconnected.
+
+STEP 4: SUBMIT & AUTO-EXIT
+  - Answer all questions.
+  - Click "Submit" at the bottom of the Google Form.
+  - The confirmation page displays ("Your response has been recorded").
+  - The lockdown banner appears:
+      "Exam Submitted! Closing in 4 seconds..."
+  - The app automatically closes itself and returns you to your desktop.
+
+
+--------------------------------------------------------------------------------
+3. SYSTEM ARCHITECTURE & LIFECYCLE FLOW
+--------------------------------------------------------------------------------
+
++--------------------------------------------------------------------------+
+| 1. STARTUP                                                               |
+|    - Single instance check (prevents duplicates)                         |
+|    - App session created in isolated partition (no saved cache/cookies)  |
+|    - Validates HTTPS Google Forms target URL                             |
++--------------------------------------------------------------------------+
+                                     |
+                                     v
++--------------------------------------------------------------------------+
+| 2. KIOSK & SECURITY ENFORCEMENT                                          |
+|    - Window: kiosk=true, fullscreen=true, alwaysOnTop='screen-saver'     |
+|    - Disables closable/resizable/minimizable user controls               |
+|    - Registers global shortcut blocks (F1-F24, Alt+Tab, Alt+F4, Win)     |
+|    - Intercepts before-input-event on all active windows                 |
+|    - 50ms blur watchdog traps and refocuses window                       |
+|    - Strictly allows only approved Google Form / Account domains         |
++--------------------------------------------------------------------------+
+                                     |
+                                     v
++--------------------------------------------------------------------------+
+| 3. EXAM SESSION IN PROGRESS                                              |
+|    - Student answers Google Form                                         |
+|    - Device sleep prevented (powerSaveBlocker active)                    |
+|    - Resilience: did-fail-load auto-retries every 5s on network loss     |
++--------------------------------------------------------------------------+
+                  |                                      |
+                  | [Form Submitted]                     | [Teacher Ctrl+Shift+X]
+                  v                                      v
++------------------------------------+   +---------------------------------+
+| 4A. AUTOMATIC COMPLETION           |   | 4B. TEACHER OVERRIDE PROMPT     |
+| - Detects /formResponse or DOM     |   | - Opens exit prompt modal       |
+|   confirmation message             |   | - Verifies SHA-256 hash in      |
+| - Injects 4-second exit banner     |   |   constant time                 |
+| - Automatically terminates app     |   | - 5 attempts max -> 30s lockout |
+| - Student returned to desktop      |   | - Valid password -> instant exit|
++------------------------------------+   +---------------------------------+
+
+
+--------------------------------------------------------------------------------
+4. QUICK REFERENCE SUMMARY
+--------------------------------------------------------------------------------
+
+Target Executable:      dist/Exam Lockdown-Portable.exe
+Default Form Link:      https://docs.google.com/forms/d/e/1FAIpQLSdimUkWd8X3OYvyVBEONXhfH1txdVbLxNMW06bf6zq_XrP8HA/viewform
+Teacher Exit Shortcut:  Ctrl + Shift + X  (Cmd + Shift + X on Mac)
+Default Teacher Pass:   Teacher123!
+Auto-Close on Submit:   Yes (4-second countdown after formResponse)
+Installation Required:  None (Standalone Portable .exe)
+================================================================================
